@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/logger"
+	"github.com/dzikrisyafi/kursusvirtual_utils-go/logger"
 	"github.com/gin-gonic/gin"
 )
 

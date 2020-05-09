@@ -16,7 +16,7 @@ type Course struct {
 
 type Courses []Course
 
-func (course *Course) Validate() *rest_errors.RestErr {
+func (course *Course) Validate() rest_errors.RestErr {
 	course.Name = strings.TrimSpace(course.Name)
 	if course.Name == "" {
 		return rest_errors.NewBadRequestError("invalid course name")
