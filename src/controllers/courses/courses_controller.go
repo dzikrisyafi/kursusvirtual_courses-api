@@ -21,16 +21,6 @@ func ParseId(courseIdParam string) (int64, rest_errors.RestErr) {
 }
 
 func Create(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	if userID := oauth.GetCallerID(c.Request); userID == 0 {
-		restErr := rest_errors.NewUnauthorizedError("invalid credentials")
-		c.JSON(restErr.Status(), restErr)
-	}
-
 	var course courses.Course
 	if err := c.ShouldBindJSON(&course); err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid json body")
@@ -48,16 +38,6 @@ func Create(c *gin.Context) {
 }
 
 func Get(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	if userID := oauth.GetCallerID(c.Request); userID == 0 {
-		restErr := rest_errors.NewUnauthorizedError("invalid credentials")
-		c.JSON(restErr.Status(), restErr)
-	}
-
 	courseID, err := ParseId(c.Param("course_id"))
 	if err != nil {
 		c.JSON(err.Status(), err)
@@ -74,16 +54,6 @@ func Get(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	if userID := oauth.GetCallerID(c.Request); userID == 0 {
-		restErr := rest_errors.NewUnauthorizedError("invalid credentials")
-		c.JSON(restErr.Status(), restErr)
-	}
-
 	courseID, err := ParseId(c.Param("course_id"))
 	if err != nil {
 		c.JSON(err.Status(), err)
@@ -109,16 +79,6 @@ func Update(c *gin.Context) {
 }
 
 func Delete(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	if userID := oauth.GetCallerID(c.Request); userID == 0 {
-		restErr := rest_errors.NewUnauthorizedError("invalid credentials")
-		c.JSON(restErr.Status(), restErr)
-	}
-
 	courseID, err := ParseId(c.Param("course_id"))
 	if err != nil {
 		c.JSON(err.Status(), err)
@@ -134,16 +94,6 @@ func Delete(c *gin.Context) {
 }
 
 func Search(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	if userID := oauth.GetCallerID(c.Request); userID == 0 {
-		restErr := rest_errors.NewUnauthorizedError("invalid credentials")
-		c.JSON(restErr.Status(), restErr)
-	}
-
 	courses, err := services.CoursesService.SearchCourse(c.Param("course_name"))
 	if err != nil {
 		c.JSON(err.Status(), err)

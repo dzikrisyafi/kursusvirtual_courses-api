@@ -20,12 +20,6 @@ type Enroll struct {
 	Cohort   string `json:"cohort"`
 }
 
-type EnrollRequest struct {
-	UserID   int64  `json:"user_id"`
-	CourseID int64  `json:"course_id"`
-	Cohort   string `json:"cohort"`
-}
-
 func (enroll *Enroll) Validate() rest_errors.RestErr {
 	if enroll.UserID <= 0 {
 		return rest_errors.NewBadRequestError("invalid user id")

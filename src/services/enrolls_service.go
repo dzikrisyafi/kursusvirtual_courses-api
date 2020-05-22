@@ -13,7 +13,7 @@ type enrollsService struct{}
 
 type enrollsServiceInterface interface {
 	GetCourseByUserID(int64) (*enrolls.User, rest_errors.RestErr)
-	CreateEnroll(enrolls.Enroll) (*enrolls.Enroll, rest_errors.RestErr)
+	CreateEnroll(enrolls.Enroll, string) (*enrolls.Enroll, rest_errors.RestErr)
 }
 
 func (s *enrollsService) GetCourseByUserID(userID int64) (*enrolls.User, rest_errors.RestErr) {
@@ -25,7 +25,7 @@ func (s *enrollsService) GetCourseByUserID(userID int64) (*enrolls.User, rest_er
 	return result, nil
 }
 
-func (s *enrollsService) CreateEnroll(req enrolls.Enroll) (*enrolls.Enroll, rest_errors.RestErr) {
+func (s *enrollsService) CreateEnroll(req enrolls.Enroll, at string) (*enrolls.Enroll, rest_errors.RestErr) {
 	dao := &enrolls.Enroll{
 		UserID:   req.UserID,
 		CourseID: req.CourseID,
@@ -34,10 +34,6 @@ func (s *enrollsService) CreateEnroll(req enrolls.Enroll) (*enrolls.Enroll, rest
 
 	if err := dao.Save(); err != nil {
 		return nil, err
-	}
-
-	if errEvnt := dao.EnrollRequest(); errEvnt != nil {
-		return nil, errEvnt
 	}
 
 	return dao, nil

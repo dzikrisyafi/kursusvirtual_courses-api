@@ -79,20 +79,3 @@ func (enroll *Enroll) Save() rest_errors.RestErr {
 
 	return nil
 }
-
-func (enroll *Enroll) EnrollRequest() rest_errors.RestErr {
-	response := oauthRestClient.Post("/internal/enrolls", enroll)
-
-	if response == nil || response.Response == nil {
-		return rest_errors.NewInternalServerError("invalid rest client response when trying to get access token", errors.New("rest client error"))
-	}
-
-	if response.StatusCode > 299 {
-		apiErr, err := rest_errors.NewRestErrorFromBytes(response.Bytes())
-		if err != nil {
-			return rest_errors.NewInternalServerError("invalid error interface when trying to get access token", err)
-		}
-		return apiErr
-	}
-	return nil
-}

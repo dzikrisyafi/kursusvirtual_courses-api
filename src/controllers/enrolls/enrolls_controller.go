@@ -12,11 +12,6 @@ import (
 )
 
 func Get(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
 	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	if err != nil {
 		restErr := rest_errors.NewBadRequestError("user id should be a number")
@@ -39,16 +34,6 @@ func Get(c *gin.Context) {
 }
 
 func Create(c *gin.Context) {
-	if err := oauth.AuthenticateRequest(c.Request); err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	if userID := oauth.GetCallerID(c.Request); userID == 0 {
-		restErr := rest_errors.NewUnauthorizedError("invalid credentials")
-		c.JSON(restErr.Status(), restErr)
-	}
-
 	var request enrolls.Enroll
 	if err := c.ShouldBindJSON(&request); err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid json body")
@@ -56,7 +41,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	enroll, err := services.EnrollsService.CreateEnroll(request)
+	enroll, err := services.EnrollsService.CreateEnroll(request, c.Query("access_token"))
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return
