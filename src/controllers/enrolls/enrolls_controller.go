@@ -27,12 +27,12 @@ func Get(c *gin.Context) {
 	}
 
 	if oauth.GetCallerID(c.Request) == enroll.UserID {
-		resp := rest_resp.NewStatusCreated("success get enroll data", enroll.Marshall(false))
+		resp := rest_resp.NewStatusOK("success get enroll data", enroll.Marshall(false))
 		c.JSON(resp.Status(), resp)
 		return
 	}
 
-	resp := rest_resp.NewStatusCreated("success get enroll data", enroll.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusOK("success get enroll data", enroll.Marshall(oauth.IsPublic(c.Request)))
 	c.JSON(resp.Status(), resp)
 }
 
