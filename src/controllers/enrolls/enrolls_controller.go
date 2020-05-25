@@ -8,6 +8,7 @@ import (
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/services"
 	"github.com/dzikrisyafi/kursusvirtual_oauth-go/oauth"
 	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_errors"
+	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_resp"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,11 +27,13 @@ func Get(c *gin.Context) {
 	}
 
 	if oauth.GetCallerID(c.Request) == enroll.UserID {
-		c.JSON(http.StatusOK, enroll.Marshall(false))
+		resp := rest_resp.NewStatusCreated("success get enroll data", enroll.Marshall(false))
+		c.JSON(resp.Status(), resp)
 		return
 	}
 
-	c.JSON(http.StatusOK, enroll.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success get enroll data", enroll.Marshall(oauth.IsPublic(c.Request)))
+	c.JSON(resp.Status(), resp)
 }
 
 func Create(c *gin.Context) {
