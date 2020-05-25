@@ -8,6 +8,7 @@ import (
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/services"
 	"github.com/dzikrisyafi/kursusvirtual_oauth-go/oauth"
 	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_errors"
+	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_resp"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +35,8 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, result.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success creating course", result.Marshall(oauth.IsPublic(c.Request)))
+	c.JSON(resp.Status(), resp)
 }
 
 func Get(c *gin.Context) {
@@ -50,7 +52,8 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, course.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success creating course", course.Marshall(oauth.IsPublic(c.Request)))
+	c.JSON(resp.Status(), resp)
 }
 
 func Update(c *gin.Context) {
@@ -75,7 +78,8 @@ func Update(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success updating course", result.Marshall(oauth.IsPublic(c.Request)))
+	c.JSON(resp.Status(), resp)
 }
 
 func Delete(c *gin.Context) {
@@ -90,7 +94,7 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]string{"status": "deleted"})
+	c.JSON(http.StatusOK, map[string]interface{}{"message": "success deleting course", "status": http.StatusOK})
 }
 
 func Search(c *gin.Context) {
@@ -100,5 +104,6 @@ func Search(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, courses.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success get course", courses.Marshall(oauth.IsPublic(c.Request)))
+	c.JSON(resp.Status(), resp)
 }
