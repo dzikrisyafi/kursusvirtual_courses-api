@@ -36,7 +36,7 @@ func (course *Course) Save() rest_errors.RestErr {
 		logger.Error("error when trying to get last insert id after creating a new course", err)
 		return rest_errors.NewInternalServerError("error when trying to save course", errors.New("database error"))
 	}
-	course.ID = courseID
+	course.ID = int(courseID)
 
 	return nil
 }

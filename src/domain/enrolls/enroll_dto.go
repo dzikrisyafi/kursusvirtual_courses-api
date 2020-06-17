@@ -3,21 +3,22 @@ package enrolls
 import "github.com/dzikrisyafi/kursusvirtual_utils-go/rest_errors"
 
 type User struct {
-	UserID  int64        `json:"user_id"`
+	UserID  int          `json:"user_id"`
 	Courses []UserCourse `json:"courses"`
 }
 
 type UserCourse struct {
-	CourseID   int64  `json:"course_id"`
+	CourseID   int    `json:"course_id"`
 	CourseName string `json:"name"`
 	Image      string `json:"image"`
+	Cohort     string `json:"cohort"`
 }
 
 type Enroll struct {
-	ID       int64  `json:"id"`
-	UserID   int64  `json:"user_id"`
-	CourseID int64  `json:"course_id"`
-	Cohort   string `json:"cohort"`
+	ID       int `json:"id"`
+	UserID   int `json:"user_id"`
+	CourseID int `json:"course_id"`
+	Cohort   int `json:"cohort"`
 }
 
 func (enroll *Enroll) Validate() rest_errors.RestErr {

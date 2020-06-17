@@ -15,9 +15,9 @@ type coursesService struct {
 
 type coursesServiceInterface interface {
 	CreateCourse(courses.Course) (*courses.Course, rest_errors.RestErr)
-	GetCourse(int64) (*courses.Course, rest_errors.RestErr)
+	GetCourse(int) (*courses.Course, rest_errors.RestErr)
 	UpdateCourse(bool, courses.Course) (*courses.Course, rest_errors.RestErr)
-	DeleteCourse(int64) rest_errors.RestErr
+	DeleteCourse(int) rest_errors.RestErr
 	SearchCourse(string) (courses.Courses, rest_errors.RestErr)
 }
 
@@ -34,7 +34,7 @@ func (s *coursesService) CreateCourse(course courses.Course) (*courses.Course, r
 	return &course, nil
 }
 
-func (s *coursesService) GetCourse(courseID int64) (*courses.Course, rest_errors.RestErr) {
+func (s *coursesService) GetCourse(courseID int) (*courses.Course, rest_errors.RestErr) {
 	result := &courses.Course{ID: courseID}
 	if err := result.Get(); err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (s *coursesService) UpdateCourse(isPartial bool, course courses.Course) (*c
 	return current, nil
 }
 
-func (s *coursesService) DeleteCourse(courseID int64) rest_errors.RestErr {
+func (s *coursesService) DeleteCourse(courseID int) rest_errors.RestErr {
 	dao := courses.Course{ID: courseID}
 	return dao.Delete()
 }

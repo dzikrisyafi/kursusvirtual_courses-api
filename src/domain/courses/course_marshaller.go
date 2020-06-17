@@ -1,8 +1,8 @@
 package courses
 
 type PublicCourse struct {
-	ID          int64  `json:"id"`
-	CategoryID  int64  `json:"category_id"`
+	ID          int    `json:"id"`
+	CategoryID  int    `json:"category_id"`
 	DateCreated string `json:"date_created"`
 }
 
@@ -11,10 +11,11 @@ func (courses Courses) Marshall(isPublic bool) []interface{} {
 	for index, course := range courses {
 		result[index] = course.Marshall(isPublic)
 	}
+
 	return result
 }
 
-func (course *Course) Marshall(isPublic bool) interface{} {
+func (course Course) Marshall(isPublic bool) interface{} {
 	if isPublic {
 		return PublicCourse{
 			ID:          course.ID,
@@ -22,5 +23,6 @@ func (course *Course) Marshall(isPublic bool) interface{} {
 			DateCreated: course.DateCreated,
 		}
 	}
+
 	return course
 }

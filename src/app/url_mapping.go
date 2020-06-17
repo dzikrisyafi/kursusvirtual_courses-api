@@ -7,6 +7,7 @@ import (
 )
 
 func mapUrls() {
+	// course end point
 	coursesGroup := router.Group("/courses")
 	coursesGroup.Use(middleware.Auth())
 	{
@@ -17,11 +18,13 @@ func mapUrls() {
 		coursesGroup.DELETE("/:course_id", courses.Delete)
 	}
 
+	// internal course end point
 	internalGroup := router.Group("/internal")
 	internalGroup.Use(middleware.Auth())
 	{
 		internalGroup.GET("/courses/:course_name", courses.Search)
 		internalGroup.GET("/enrolls/:user_id", enrolls.Get)
 		internalGroup.POST("/enrolls", enrolls.Create)
+		router.DELETE("/enrolls/:enroll_id", enrolls.Delete)
 	}
 }

@@ -2,24 +2,15 @@ package courses
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/domain/courses"
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/services"
 	"github.com/dzikrisyafi/kursusvirtual_oauth-go/oauth"
+	"github.com/dzikrisyafi/kursusvirtual_utils-go/controller_utils"
 	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_errors"
 	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_resp"
 	"github.com/gin-gonic/gin"
 )
-
-func ParseId(courseIdParam string) (int64, rest_errors.RestErr) {
-	courseID, err := strconv.ParseInt(courseIdParam, 10, 64)
-	if err != nil {
-		return 0, rest_errors.NewBadRequestError("course id should be a number")
-	}
-
-	return courseID, nil
-}
 
 func Create(c *gin.Context) {
 	var course courses.Course
@@ -35,12 +26,12 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	resp := rest_resp.NewStatusCreated("success creating course", result.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success create new course", result.Marshall(oauth.IsPublic(c.Request)))
 	c.JSON(resp.Status(), resp)
 }
 
 func Get(c *gin.Context) {
-	courseID, err := ParseId(c.Param("course_id"))
+	courseID, err := controller_utils.GetIDInt(c.Param("course_id"), "course id")
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return
@@ -57,7 +48,7 @@ func Get(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
-	courseID, err := ParseId(c.Param("course_id"))
+	courseID, err := controller_utils.GetIDInt(c.Param("course_id"), "course id")
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return
@@ -83,7 +74,7 @@ func Update(c *gin.Context) {
 }
 
 func Delete(c *gin.Context) {
-	courseID, err := ParseId(c.Param("course_id"))
+	courseID, err := controller_utils.GetIDInt(c.Param("course_id"), "course id")
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return

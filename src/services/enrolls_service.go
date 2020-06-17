@@ -12,11 +12,12 @@ var (
 type enrollsService struct{}
 
 type enrollsServiceInterface interface {
-	GetCourseByUserID(int64) (*enrolls.User, rest_errors.RestErr)
-	CreateEnroll(enrolls.Enroll, string) (*enrolls.Enroll, rest_errors.RestErr)
+	GetCourseByUserID(int) (*enrolls.User, rest_errors.RestErr)
+	CreateEnroll(enrolls.Enroll) (*enrolls.Enroll, rest_errors.RestErr)
+	DeleteEnroll(int) rest_errors.RestErr
 }
 
-func (s *enrollsService) GetCourseByUserID(userID int64) (*enrolls.User, rest_errors.RestErr) {
+func (s *enrollsService) GetCourseByUserID(userID int) (*enrolls.User, rest_errors.RestErr) {
 	result := &enrolls.User{UserID: userID}
 	if err := result.GetCourseByUserID(); err != nil {
 		return nil, err
@@ -25,7 +26,7 @@ func (s *enrollsService) GetCourseByUserID(userID int64) (*enrolls.User, rest_er
 	return result, nil
 }
 
-func (s *enrollsService) CreateEnroll(req enrolls.Enroll, at string) (*enrolls.Enroll, rest_errors.RestErr) {
+func (s *enrollsService) CreateEnroll(req enrolls.Enroll) (*enrolls.Enroll, rest_errors.RestErr) {
 	dao := &enrolls.Enroll{
 		UserID:   req.UserID,
 		CourseID: req.CourseID,
@@ -37,4 +38,9 @@ func (s *enrollsService) CreateEnroll(req enrolls.Enroll, at string) (*enrolls.E
 	}
 
 	return dao, nil
+}
+
+func (s *enrollsService) DeleteEnroll(enrollID int) rest_errors.RestErr {
+	dao := enrolls.Enroll{ID: enrollID}
+	return dao.Delete()
 }
