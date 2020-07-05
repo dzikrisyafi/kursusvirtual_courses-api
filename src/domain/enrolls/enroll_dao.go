@@ -12,7 +12,8 @@ import (
 
 const (
 	queryInsertEnroll      = `INSERT INTO enrolls (user_id, course_id, cohort_id) VALUES (?, ?, ?);`
-	queryGetCourseByUserID = `SELECT course_id, courses.name, image, cohort.name FROM enrolls INNER JOIN courses ON course_id=courses.id INNER JOIN cohort ON cohort_id=cohort.id WHERE user_id=?;`
+	queryGetCourseByUserID = `SELECT course_id, courses.name, image, cohort.id, cohort.name FROM enrolls INNER JOIN courses ON course_id=courses.id INNER JOIN cohort ON cohort_id=cohort.id WHERE user_id=?;`
+	queryUpdateEnroll      = `UPDATE enrolls SET user_id=?, course_id=?, cohort_id=? WHERE id=?;`
 	queryDeleteEnroll      = `DELETE FROM enrolls WHERE id=?;`
 )
 
@@ -24,7 +25,7 @@ func (enroll *Enroll) Save() rest_errors.RestErr {
 	}
 	defer stmt.Close()
 
-	insertResult, saveErr := stmt.Exec(enroll.UserID, enroll.CourseID, enroll.Cohort)
+	insertResult, saveErr := stmt.Exec(enroll.UserID, enroll.CourseID, enroll.CohortID)
 	if saveErr != nil {
 		logger.Error("error when trying to save enroll", saveErr)
 		return rest_errors.NewInternalServerError("error when trying to save enroll", errors.New("database error"))
@@ -57,7 +58,7 @@ func (user *User) GetCourseByUserID() rest_errors.RestErr {
 
 	var course UserCourse
 	for rows.Next() {
-		if err := rows.Scan(&course.CourseID, &course.CourseName, &course.Image, &course.Cohort); err != nil {
+		if err := rows.Scan(&course.CourseID, &course.CourseName, &course.Image, &course.CohortID, &course.Cohort); err != nil {
 			logger.Error("error when trying to scan course rows into course struct", err)
 			return rest_errors.NewInternalServerError("error when trying to get course", errors.New("database error"))
 		}
@@ -67,6 +68,21 @@ func (user *User) GetCourseByUserID() rest_errors.RestErr {
 
 	if len(user.Courses) == 0 {
 		return rest_errors.NewNotFoundError(fmt.Sprintf("no courses matching given user id %d", user.UserID))
+	}
+
+	return nil
+}
+
+func (enroll *Enroll) Update() rest_errors.RestErr {
+	stmt, err := courses_db.DbConn().Prepare(queryUpdateEnroll)
+	if err != nil {
+		logger.Error("error when trying to prepare update enroll by user and course id statement", err)
+		return rest_errors.NewInternalServerError("error when trying to update enroll", errors.New("database error"))
+	}
+
+	if _, err = stmt.Exec(enroll.UserID, enroll.CourseID, enroll.CohortID, enroll.ID); err != nil {
+		logger.Error("error when trying to update enroll by user and course id", err)
+		return rest_errors.NewInternalServerError("error when trying to update enroll", errors.New("database error"))
 	}
 
 	return nil

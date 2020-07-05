@@ -13,16 +13,17 @@ import (
 var (
 	client *sql.DB
 
-	username = os.Getenv("mysql_username")
-	password = os.Getenv("mysql_password")
-	host     = os.Getenv("mysql_host")
-	schema2  = os.Getenv("mysql_schema2")
+	username = os.Getenv("MYSQL_USER")
+	password = os.Getenv("MYSQL_PASSWORD")
+	host     = os.Getenv("MYSQL_HOST")
+	schema   = "courses_db"
 )
 
 func init() {
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
-		username, password, host, schema2,
+		username, password, host, schema,
 	)
+
 	var err error
 	client, err = sql.Open("mysql", dataSourceName)
 	if err != nil {

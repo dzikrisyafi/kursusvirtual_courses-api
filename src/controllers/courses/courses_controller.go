@@ -26,7 +26,7 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	resp := rest_resp.NewStatusCreated("success create new course", result.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusCreated("success created course", result.Marshall(oauth.IsPublic(c.Request)))
 	c.JSON(resp.Status(), resp)
 }
 
@@ -37,13 +37,23 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	course, getErr := services.CoursesService.GetCourse(courseID)
-	if err != nil {
+	result, getErr := services.CoursesService.GetCourse(courseID)
+	if getErr != nil {
 		c.JSON(getErr.Status(), getErr)
 		return
 	}
 
-	resp := rest_resp.NewStatusOK("success creating course", course.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusOK("success get course", result.Marshall(oauth.IsPublic(c.Request)))
+	c.JSON(resp.Status(), resp)
+}
+
+func GetAll(c *gin.Context) {
+	result, getErr := services.CoursesService.GetAllCourse()
+	if getErr != nil {
+		c.JSON(getErr.Status(), getErr)
+	}
+
+	resp := rest_resp.NewStatusOK("success get course", result.Marshall(oauth.IsPublic(c.Request)))
 	c.JSON(resp.Status(), resp)
 }
 
@@ -80,12 +90,12 @@ func Delete(c *gin.Context) {
 		return
 	}
 
-	if err := services.CoursesService.DeleteCourse(courseID); err != nil {
+	if err := services.CoursesService.DeleteCourse(courseID, c.Query("access_token")); err != nil {
 		c.JSON(err.Status(), err)
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{"message": "success deleting course", "status": http.StatusOK})
+	c.JSON(http.StatusOK, map[string]interface{}{"message": "success deleted course", "status": http.StatusOK})
 }
 
 func Search(c *gin.Context) {

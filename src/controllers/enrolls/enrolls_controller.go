@@ -20,19 +20,19 @@ func Get(c *gin.Context) {
 		return
 	}
 
-	enroll, getErr := services.EnrollsService.GetCourseByUserID(userID)
+	result, getErr := services.EnrollsService.GetCourseByUserID(userID)
 	if getErr != nil {
 		c.JSON(getErr.Status(), getErr)
 		return
 	}
 
-	if oauth.GetCallerID(c.Request) == enroll.UserID {
-		resp := rest_resp.NewStatusOK("success get enroll data", enroll.Marshall(false))
+	if oauth.GetCallerID(c.Request) == result.UserID {
+		resp := rest_resp.NewStatusOK("success get enroll data", result.Marshall(false))
 		c.JSON(resp.Status(), resp)
 		return
 	}
 
-	resp := rest_resp.NewStatusOK("success get enroll data", enroll.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusOK("success get enroll data", result.Marshall(oauth.IsPublic(c.Request)))
 	c.JSON(resp.Status(), resp)
 }
 
@@ -44,13 +44,37 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	enroll, err := services.EnrollsService.CreateEnroll(request)
+	result, err := services.EnrollsService.CreateEnroll(request)
 	if err != nil {
 		c.JSON(err.Status(), err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, enroll)
+	c.JSON(http.StatusCreated, result)
+}
+
+func Update(c *gin.Context) {
+	enrollID, err := controller_utils.GetIDInt(c.Param("enroll_id"), "enroll id")
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	var request enrolls.Enroll
+	if err := c.ShouldBindJSON(&request); err != nil {
+		restErr := rest_errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status(), restErr)
+		return
+	}
+
+	request.ID = enrollID
+	result, err := services.EnrollsService.UpdateEnroll(request)
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
 
 func Delete(c *gin.Context) {
