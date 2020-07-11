@@ -3,7 +3,7 @@ package services
 import (
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/domain/courses"
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/repository/rest"
-	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/utils/date_utils"
+	"github.com/dzikrisyafi/kursusvirtual_utils-go/date_utils"
 	"github.com/dzikrisyafi/kursusvirtual_utils-go/rest_errors"
 )
 
