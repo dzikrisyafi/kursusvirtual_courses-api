@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/controllers/categories"
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/controllers/cohort"
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/controllers/courses"
 	"github.com/dzikrisyafi/kursusvirtual_courses-api/src/controllers/enrolls"
@@ -18,6 +19,17 @@ func mapUrls() {
 		coursesGroup.PUT("/:course_id", courses.Update)
 		coursesGroup.PATCH("/:course_id", courses.Update)
 		coursesGroup.DELETE("/:course_id", courses.Delete)
+	}
+
+	// category course end point
+	categoriesGroup := router.Group("/categories")
+	categoriesGroup.Use(middleware.Auth())
+	{
+		categoriesGroup.POST("/", categories.Create)
+		categoriesGroup.GET("/:category_id", categories.Get)
+		categoriesGroup.GET("/", categories.GetAll)
+		categoriesGroup.PUT("/:category_id", categories.Update)
+		categoriesGroup.DELETE("/:category_id", categories.Delete)
 	}
 
 	// internal course end point

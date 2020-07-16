@@ -51,6 +51,7 @@ func GetAll(c *gin.Context) {
 	result, getErr := services.CoursesService.GetAllCourse()
 	if getErr != nil {
 		c.JSON(getErr.Status(), getErr)
+		return
 	}
 
 	resp := rest_resp.NewStatusOK("success get course", result.Marshall(oauth.IsPublic(c.Request)))
@@ -79,7 +80,7 @@ func Update(c *gin.Context) {
 		return
 	}
 
-	resp := rest_resp.NewStatusOK("success updating course", result.Marshall(oauth.IsPublic(c.Request)))
+	resp := rest_resp.NewStatusOK("success updated course", result.Marshall(oauth.IsPublic(c.Request)))
 	c.JSON(resp.Status(), resp)
 }
 
